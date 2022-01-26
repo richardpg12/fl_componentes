@@ -7,6 +7,18 @@ class InputsScreen extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
+
+    final GlobalKey<FormState> myformKey= GlobalKey<FormState>();
+
+    final Map<String, String> formValues={
+      'first_name'  :'Richard',
+      'last_name'   :'Perez',
+      'email'       :'richard.perezg26@gmail.com',
+      'password'    :'123456',
+      'role'        :'Admin',
+
+    };
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Inputs y Forms'),
@@ -15,16 +27,39 @@ class InputsScreen extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20,vertical:10),
           child:Form(
-            
+            key: myformKey,
             child: Column(
               children: [
-                const CustomInputField(labelText: 'Nombre',hintText:'Nombre del usuario'),
+                CustomInputField(labelText: 'Nombre',hintText:'Nombre del usuario',formProperty:'first_name',formValues: formValues),
                 const SizedBox(height: 30),
-                const CustomInputField(labelText: 'Apellido',hintText:'Apellido del usuario'),
+                CustomInputField(labelText: 'Apellido',hintText:'Apellido del usuario',formProperty:'last_name',formValues: formValues),
                 const SizedBox(height: 30),
-                const CustomInputField(labelText: 'Correo',hintText:'Correo del usuario',keyboardType: TextInputType.emailAddress,),
+                CustomInputField(labelText: 'Correo',hintText:'Correo del usuario',keyboardType: TextInputType.emailAddress,formProperty:'email',formValues: formValues),
                 const SizedBox(height: 30),
-                const CustomInputField(labelText: 'Password',hintText:'Contraseña del usuario', obscureText: true,),
+                CustomInputField(labelText: 'Password',hintText:'Contraseña del usuario', obscureText: true,formProperty:'password',formValues: formValues),
+                const SizedBox(height: 30),
+
+
+                DropdownButtonFormField<String>(
+                  value: formValues['role'],
+                  items: const [
+                    DropdownMenuItem(value: 'Admin',child: Text('Admin'),),
+                    DropdownMenuItem(value: 'Superuser',child: Text('Superuser'),),
+                    DropdownMenuItem(value: 'Developer',child: Text('Developer'),),
+                    DropdownMenuItem(value: 'Jr. Developer',child: Text('Jr. Developer'),),
+                  ],
+                  onChanged: (value){
+                    formValues['role']=value??'Admin';
+                  },
+                  decoration: InputDecoration(
+                    labelText: 'Rol',
+                    hintText: 'Seleccione el rol del usuario',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10)
+                    ),
+                  ),
+                ),
+
                 const SizedBox(height: 30),
                 ElevatedButton(
                   child: const SizedBox(
@@ -32,7 +67,14 @@ class InputsScreen extends StatelessWidget {
                     child: Center(child: Text('Enviar'))
                     ),
                   onPressed: (){
+                    FocusScope.of(context).requestFocus(FocusNode());
+                    if(!myformKey.currentState!.validate()){
+                      print("formulario no valido");
+                      return;
+                    }
                     // To do: Imprimir valores del formulario
+                    print(formValues);
+                    print(myformKey);
                   },
                 ),
                 
